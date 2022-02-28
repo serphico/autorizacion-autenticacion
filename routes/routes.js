@@ -37,7 +37,7 @@ registerRoute.get('/', (req,res) => {
     res.render('./layouts/registro.pug')
 })
 
-registerRoute.post('/', passport.authenticate('registro',{failureRedirect: '/failregistro', successRedirect: '/login'}))
+registerRoute.post('/', passport.authenticate('registro',{failureRedirect: '/failregistro', failureMessage: true, successRedirect: '/login'}))
 
 loginRoute.get('/', (req,res) => {
 

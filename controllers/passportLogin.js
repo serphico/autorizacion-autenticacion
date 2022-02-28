@@ -53,8 +53,9 @@ function isValidPassword(user, password) {
      )
 
      passport.use('login', new LocalStrategy(
-        (req, done) => {
-            console.log(req.body.email)
+        (email, password, done) => {
+            console.log(email, password)
+            //let email = req.body.email;
         Users.findOne({ email }, (err, user) => {
             if (err)
               return done(err);
