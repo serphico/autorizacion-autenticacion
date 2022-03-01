@@ -6,6 +6,10 @@ const appRoute = Router();
 const chatRoute = Router();
 const loginRoute = Router();
 const registerRoute = Router();
+const logoutRoute = Router();
+
+const failLoginRoute = Router();
+const failRegisterRoute = Router();
 
 chatRoute.get('/', isAuth,(req,res) => {
 
@@ -14,12 +18,12 @@ chatRoute.get('/', isAuth,(req,res) => {
 
 appRoute.get('/', isAuth,(req, res) => {
         let products = prodGen();
-        let user = req.session.username
+        let user = req.session.email
         res.render('./layouts/productos.pug',{products,user})
 })
 
 appRoute.post('/', (req, res) => {
-    let user = req.session.username
+    let user = req.session.email
 
     req.session.destroy( err =>{
         if(err){
@@ -37,13 +41,30 @@ registerRoute.get('/', (req,res) => {
     res.render('./layouts/registro.pug')
 })
 
-registerRoute.post('/', passport.authenticate('registro',{failureRedirect: '/failregistro', failureMessage: true, successRedirect: '/login'}))
+registerRoute.post('/', passport.authenticate('registro',{failureRedirect: '/failregistro', successRedirect: '/login'}))
 
 loginRoute.get('/', (req,res) => {
 
     res.render('./layouts/login.pug')
 })
 
-loginRoute.post('/', passport.authenticate('login',{failureRedirect: '/faillogin', successRedirect: '/api/productos-test'}))
+loginRoute.post('/', passport.authenticate('login',{failureRedirect: '/faillogin'}),(req, res)=>{
+    req.session.email = req.body.username
 
-module.exports = {appRoute,chatRoute,loginRoute,registerRoute};
+    res.redirect('/api/productos-test')
+})
+
+logoutRoute.get('/', (req, res) => {
+    req.logOut();
+    res.redirect('/login')
+})
+
+failLoginRoute.get('/',(req, res)=>{
+    res.render('./layouts/loginfail.pug')
+})
+
+failRegisterRoute.get('/',(req, res)=>{
+    res.render('./layouts/registrofail.pug')
+})
+
+module.exports = {appRoute,chatRoute,loginRoute,registerRoute,logoutRoute, failLoginRoute, failRegisterRoute};

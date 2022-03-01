@@ -3,7 +3,7 @@ function isAuth(req,res,next) {
     if (req.isAuthenticated() && req.session.email) {
         next()
     } else {
-        res.redirect('/')
+        res.redirect('/login')
     }
 }
 

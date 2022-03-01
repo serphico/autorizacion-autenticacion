@@ -2,7 +2,7 @@ const express = require('express');
 const { Server: HttpServer} = require('http');
 const { Server: IOServer, Socket} = require('socket.io');
 const dotenv = require('dotenv');
-const {appRoute, chatRoute, loginRoute, registerRoute} = require('./routes/routes.js');
+const {appRoute, chatRoute, loginRoute, registerRoute,logoutRoute,failLoginRoute, failRegisterRoute} = require('./routes/routes.js');
 const chatCt = require('./controllers/chatController.js')
 const cookieParse = require('cookie-parser')
 const session = require('express-session')
@@ -30,7 +30,7 @@ app.use(session({
     resave: true,
     saveUninitialized: false,
     cookie: {
-      maxAge: 60000
+      maxAge: 100000
     }    
 }));
 
@@ -56,7 +56,11 @@ app.use('/chat', chatRoute);
 
 app.use('/api/productos-test', appRoute);
 
+app.use('/logout', logoutRoute)
 
+app.use('/failregistro', failRegisterRoute)
+
+app.use('/faillogin', failLoginRoute)
 
 io.on('connection', (socket) =>{
     console.log('usuario conectado');

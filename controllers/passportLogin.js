@@ -2,7 +2,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const {mongoDB} = require('../config.js')
 const bCrypt = require('bcrypt')
-const Users = require('../controllers/schema.js');
+const Users = require('./schema.js');
 
 function isValidPassword(user, password) {
     return bCrypt.compareSync(password, user.password);
@@ -44,7 +44,6 @@ function isValidPassword(user, password) {
               console.log('Error in Saving user: ' + err);
               return done(err);
             }
-            console.log(user)
             console.log('User Registration succesful');
             return done(null, userWithId);
           });
@@ -52,16 +51,15 @@ function isValidPassword(user, password) {
       })
      )
 
-     passport.use('login', new LocalStrategy(
-        (email, password, done) => {
-            console.log(email, password)
-            //let email = req.body.email;
-        Users.findOne({ email }, (err, user) => {
+     passport.use('login', new LocalStrategy((username, password, done) => {
+
+        Users.findOne({ 'email':username }, (err, user) => {
+
             if (err)
               return done(err);
        
             if (!user) {
-              console.log('No se encontro el usuario ' + email);
+              console.log('No se encontro el usuario ' + username);
               return done(null, false);
             }
        
